@@ -1,0 +1,33 @@
+body {
+  font-family: 'Slabo 27px', serif;
+}
+
+#todo-list {
+  margin: 50px auto;
+  width: 600px;
+}
+
+#login,
+#register {
+  text-align: center;
+  margin: 50px auto;
+  width: 400px;
+  border: 2px solid lightblue;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+#todo-list h4 {
+  text-align: center;
+}
+
+#todo-list .btn {
+  margin: 10px 50%;
+  transform: translate(-50%)
+}
+
+#todo-list .fas {
+  margin-left: 10px;
+  size: 2em;
+  cursor: pointer;
+}

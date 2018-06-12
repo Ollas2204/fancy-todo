@@ -3,21 +3,16 @@ const mongoose = require("mongoose");
 let Schema = mongoose.Schema;
 let userSchema = new Schema(
   {
-    username: {
+    email: {
       type: String,
-      unique: [true, "username is used"],
       required: [true, "username is required"]
     },
     password: {
       type: String,
       required: [true, "password is required"]
     },
-    firstName: String,
-    lastName: String,
-    role: {
-      type: String,
-      enum: ["admin", "user"]
-    },
+    name: String,
+    fbID: String,
     todos: [{
       type: Schema.Types.ObjectId,
       ref: "todos"

@@ -11,9 +11,9 @@ let todoSchema = new Schema(
       type: String,
       required: [true, "action is required"]
     },
-    status: {
-      type: String,
-      default: "Not Finished"
+    completed: {
+      type: Boolean,
+      default: 0
     },
     tags: {
       type: Array,
