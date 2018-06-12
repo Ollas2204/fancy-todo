@@ -15,7 +15,8 @@ new Vue({
     removeTags: "",
     warning: "",
     hasWarning: false,
-    search: ""
+    search: "",
+    user: ""
   },
   methods: {
     login: function() {
@@ -28,6 +29,7 @@ new Vue({
         .then(({ data }) => {
           if (data.token) {
             this.isLoggedIn = true;
+            this.user = data.name;
             localStorage.setItem("token", data.token);
             this.getTodos();
             this.cleanInput();
@@ -55,6 +57,7 @@ new Vue({
         .then(({ data }) => {
           if (data.token) {
             this.isLoggedIn = true;
+            this.user = data.name;
             localStorage.setItem("token", data.token);
             this.getTodos();
             this.cleanInput();
@@ -86,6 +89,7 @@ new Vue({
               )
               .then(({ data }) => {
                 self.isLoggedIn = true;
+                self.user = data.name;
                 localStorage.setItem("token", data.token);
                 self.getTodos();
               })

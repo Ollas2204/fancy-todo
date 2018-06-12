@@ -34,6 +34,7 @@
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
           <a v-if="!isLoggedIn" @click="isRegister = false" class="dropdown-item" href="#">Login</a>
+          <p v-if="isLoggedIn" class="dropdown-item">Welcome, {{user}}</p>
           <a v-if="isLoggedIn" @click="logout()" class="dropdown-item" href="#">Logout</a>
         </div>
       </div>

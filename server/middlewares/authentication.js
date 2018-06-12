@@ -11,6 +11,7 @@ module.exports = function(req, res, next) {
         let isPasswordTrue = bcrypt.compareSync(password, user.password);
         if (isPasswordTrue) {
           req.body.userId = user._id;
+          req.body.name = user.name;
           next();
         } else {
           res.json({

@@ -25,10 +25,12 @@ module.exports = {
           .create(userInfo)
           .then(newUser => {
             let userId = newUser._id;
+            let name = newUser.name;
             let token = jwt.sign({ userId }, process.env.SECRET_KEY);
             res.status(201).json({
               msg: "successfully create new user",
-              token
+              token,
+              name
             });
           })
           .catch(err => {
@@ -39,10 +41,12 @@ module.exports = {
   },
   signin: function(req, res) {
     let userId = req.body.userId;
+    let name = req.body.name;
     let token = jwt.sign({ userId }, process.env.SECRET_KEY);
     res.status(200).json({
       message: "successfully sign in",
-      token
+      token,
+      name
     });
   },
   fbLogin: function(req, res) {
@@ -56,11 +60,12 @@ module.exports = {
           .then(result => {
             if (result) {
               let userId = result._id;
+              let name = result.name;
               let token = jwt.sign({ userId }, process.env.SECRET_KEY);
               res.status(201).json({
                 msg: "logged in",
-                result,
-                token
+                token,
+                name
               });
             } else {
               let salt = bcrypt.genSaltSync(7);
@@ -74,11 +79,12 @@ module.exports = {
                 })
                 .then(newUser => {
                   let userId = newUser._id;
+                  let name = newUser.name;
                   let token = jwt.sign({ userId }, process.env.SECRET_KEY);
                   res.status(201).json({
                     msg: "add new user",
-                    newUser,
-                    token
+                    token,
+                    name
                   });
                 });
             }
