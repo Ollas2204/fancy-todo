@@ -1,11 +1,18 @@
 const mongoose = require("mongoose");
 
 let Schema = mongoose.Schema;
+
+const emailValidator = function(email) {
+  return /^\w([.!#$%&’*+/=?^_`{|}~-]*?\w+)+@\w+(\.\w{2,3})+$/.test(email);
+};
+
+
 let userSchema = new Schema(
   {
     email: {
       type: String,
-      required: [true, "username is required"]
+      required: [true, "email is required"],
+      validate: [emailValidator, "not valid email format"]
     },
     password: {
       type: String,

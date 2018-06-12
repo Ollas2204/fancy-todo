@@ -31,3 +31,27 @@ body {
   size: 2em;
   cursor: pointer;
 }
+
+.alert {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 350px;
+  margin: auto;
+  z-index: 10;
+}
+
+#fb-login {
+  background-color: darkblue;
+  border: 0;
+  color: white;
+}
+
+#fb-login:hover {
+  color: lightgray;
+}
+
+.refresh {
+  margin-left: 8px;
+}

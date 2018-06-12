@@ -10,10 +10,5 @@ router.delete(
   userValidation,
   userController.deleteTodo
 );
-router.post(
-  "/todo/:todoId/add-tag",
-  userValidation,
-  userController.addTag
-);
 
 module.exports = router;

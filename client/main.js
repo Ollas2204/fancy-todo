@@ -4,15 +4,18 @@ new Vue({
     isLoggedIn: false,
     isRegister: false,
     todos: [],
-    email: "mc@mail.com",
+    email: "michael@mail.com",
     password: "michaelcang",
-    name: "michael",
+    name: "michaelcang",
     newItem: "",
     tags: "",
     editItemId: "",
     updateItem: "",
     addTags: "",
-    removeTags: ""
+    removeTags: "",
+    warning: "",
+    hasWarning: false,
+    search: ""
   },
   methods: {
     login: function() {
@@ -23,11 +26,14 @@ new Vue({
       axios
         .post("http://localhost:3000/signin", payload)
         .then(({ data }) => {
-          console.log("USER DATA", data);
           if (data.token) {
             this.isLoggedIn = true;
             localStorage.setItem("token", data.token);
             this.getTodos();
+            this.cleanInput();
+          } else {
+            this.warning = data;
+            this.hasWarning = true;
           }
         })
         .catch(err => {
@@ -47,16 +53,50 @@ new Vue({
       axios
         .post("http://localhost:3000/signup", payload)
         .then(({ data }) => {
-          console.log("USER DATA", data);
           if (data.token) {
             this.isLoggedIn = true;
             localStorage.setItem("token", data.token);
             this.getTodos();
+            this.cleanInput();
+            this.isRegister = false;
+          } else {
+            this.warning = data;
+            this.hasWarning = true;
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    loginFB: function() {
+      let self = this;
+      FB.getLoginStatus(function(response) {
+        FB.login(function(response) {
+          console.log("statusChangeCallback");
+          console.log(response);
+          if (response.status === "connected") {
+            // Logged into your app and Facebook.
+            let accessToken = response.authResponse.accessToken;
+            localStorage.setItem("fbAccess", accessToken);
+            axios
+              .post(
+                "http://localhost:3000/fb-login",
+                {},
+                { headers: { accessToken } }
+              )
+              .then(({ data }) => {
+                self.isLoggedIn = true;
+                localStorage.setItem("token", data.token);
+                self.getTodos();
+              })
+              .catch(err => {
+                if (err) {
+                  console.log(err);
+                }
+              });
+          }
+        });
+      });
     },
     getTodos: function() {
       let token = localStorage.getItem("token");
@@ -81,9 +121,13 @@ new Vue({
       axios
         .post("http://localhost:3000/user", payload, config)
         .then(({ data }) => {
-          console.log(data);
-          this.getTodos();
-          this.cleanInput();
+          if (data.action) {
+            this.warning = data;
+            this.hasWarning = true;
+          } else {
+            this.getTodos();
+            this.cleanInput();
+          }
         })
         .catch(err => {
           console.log(err);
@@ -138,6 +182,23 @@ new Vue({
           console.log(err);
         });
     },
+    searchTag: function() {
+      if (this.search !== "") {
+        let token = localStorage.getItem("token");
+        let config = { headers: { token } };
+        let query = this.search;
+        axios
+          .get(`http://localhost:3000/user?tag=${query}`, config)
+          .then(({ data }) => {
+            console.log(data);
+            this.todos = data.todos;
+            this.cleanInput();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    },
     getDate: function(input) {
       let d = new Date(input);
       let year = d.getFullYear();
@@ -158,6 +219,11 @@ new Vue({
       this.updateItem = "";
       this.addTags = "";
       this.removeTags = "";
+      this.email = "";
+      this.password = "";
+      this.name = "";
+      this.warning = "";
+      this.search = "";
     }
   },
   created: function() {

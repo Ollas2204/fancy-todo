@@ -46,7 +46,7 @@ module.exports = {
       })
       .catch(err => {
         if (err) {
-          res.status(400).send(err);
+          res.send(err.errors);
         }
       });
   },
@@ -90,24 +90,6 @@ module.exports = {
       .then(todo => {
         res.status(200).json({
           msg: "successfully remove to do from list",
-          todo
-        });
-      })
-      .catch(err => {
-        if (err) {
-          res.status(400).json(err);
-        }
-      });
-  },
-  addTag: function(req, res) {
-    let user = req.params.userId;
-    let todoId = req.params.todoId;
-    let newTag = req.body.tag;
-    todo
-      .findByIdAndUpdate(todoId, { $push: { tags: newTag } }, { new: true })
-      .then(todo => {
-        res.status(200).json({
-          msg: "successfully add new tag to todo",
           todo
         });
       })

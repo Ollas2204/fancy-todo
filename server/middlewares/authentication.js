@@ -10,18 +10,16 @@ module.exports = function(req, res, next) {
       if (user) {
         let isPasswordTrue = bcrypt.compareSync(password, user.password);
         if (isPasswordTrue) {
-          req.body.userId = user._id
+          req.body.userId = user._id;
           next();
         } else {
           res.json({
-            status: 400,
-            message: "email / password wrong"
+            err: { message: "email / password wrong" }
           });
         }
       } else {
         res.json({
-          status: 400,
-          message: "email / password wrong"
+          err: { message: "email / password wrong" }
         });
       }
     })
