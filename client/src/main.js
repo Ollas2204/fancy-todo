@@ -25,11 +25,12 @@ new Vue({
         password: this.password
       };
       axios
-        .post("http://localhost:3000/signin", payload)
+        .post("http://35.240.242.164/signin", payload)
         .then(({ data }) => {
           if (data.token) {
             this.isLoggedIn = true;
-            this.user = data.name;
+            localStorage.setItem("name", data.name);
+            this.user = data.name
             localStorage.setItem("token", data.token);
             this.getTodos();
             this.cleanInput();
@@ -53,11 +54,12 @@ new Vue({
         name: this.name
       };
       axios
-        .post("http://localhost:3000/signup", payload)
+        .post("http://35.240.242.164/signup", payload)
         .then(({ data }) => {
           if (data.token) {
             this.isLoggedIn = true;
-            this.user = data.name;
+            localStorage.setItem("name", data.name);
+            this.user = data.name
             localStorage.setItem("token", data.token);
             this.getTodos();
             this.cleanInput();
@@ -83,13 +85,14 @@ new Vue({
             localStorage.setItem("fbAccess", accessToken);
             axios
               .post(
-                "http://localhost:3000/fb-login",
+                "http://35.240.242.164/fb-login",
                 {},
                 { headers: { accessToken } }
               )
               .then(({ data }) => {
                 self.isLoggedIn = true;
-                self.user = data.name;
+                localStorage.setItem("name", data.name);
+                this.user = data.name
                 localStorage.setItem("token", data.token);
                 self.getTodos();
               })
@@ -106,7 +109,7 @@ new Vue({
       let token = localStorage.getItem("token");
       let config = { headers: { token } };
       axios
-        .get("http://localhost:3000/user/", config)
+        .get("http://35.240.242.164/user/", config)
         .then(({ data }) => {
           console.log(data);
           this.todos = data.todos;
@@ -123,7 +126,7 @@ new Vue({
         tags: this.tags.split(" ")
       };
       axios
-        .post("http://localhost:3000/user", payload, config)
+        .post("http://35.240.242.164/user", payload, config)
         .then(({ data }) => {
           if (data.action) {
             this.warning = data;
@@ -149,7 +152,7 @@ new Vue({
         payload.action = this.newItem;
       }
       axios
-        .put(`http://localhost:3000/user/todo/${itemId}`, payload, config)
+        .put(`http://35.240.242.164/user/todo/${itemId}`, payload, config)
         .then(({ data }) => {
           console.log(data);
           this.getTodos();
@@ -163,7 +166,7 @@ new Vue({
       let token = localStorage.getItem("token");
       let config = { headers: { token } };
       axios
-        .delete(`http://localhost:3000/user/todo/${itemId}`, config)
+        .delete(`http://35.240.242.164/user/todo/${itemId}`, config)
         .then(({ data }) => {
           console.log(data);
           this.getTodos();
@@ -177,7 +180,7 @@ new Vue({
       let token = localStorage.getItem("token");
       let config = { headers: { token } };
       axios
-        .put(`http://localhost:3000/user/todo/${itemId}`, update, config)
+        .put(`http://35.240.242.164/user/todo/${itemId}`, update, config)
         .then(({ data }) => {
           console.log(data);
           this.getTodos();
@@ -192,7 +195,7 @@ new Vue({
         let config = { headers: { token } };
         let query = this.search;
         axios
-          .get(`http://localhost:3000/user?tag=${query}`, config)
+          .get(`http://35.240.242.164/user?tag=${query}`, config)
           .then(({ data }) => {
             console.log(data);
             this.todos = data.todos;
@@ -232,6 +235,8 @@ new Vue({
   },
   created: function() {
     if (localStorage.getItem("token")) {
+      this.user = localStorage.getItem("name")
+      this.isLoggedIn = true;
       this.getTodos();
     }
   }
