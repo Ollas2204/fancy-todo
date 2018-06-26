@@ -23,6 +23,6 @@ mongoose.connect(url).then(()=> {
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("listening in port 3000");
 });
