@@ -28,7 +28,7 @@ new Vue({
           if (data.token) {
             this.isLoggedIn = true;
             localStorage.setItem("name", data.name);
-            this.user = data.name
+            this.user = data.name;
             localStorage.setItem("token", data.token);
             this.getTodos();
             this.cleanInput();
@@ -36,7 +36,7 @@ new Vue({
             swal({
               title: "Warning!",
               text: data.err.message,
-              icon: "warning",
+              icon: "warning"
             });
           }
         })
@@ -60,7 +60,7 @@ new Vue({
           if (data.token) {
             this.isLoggedIn = true;
             localStorage.setItem("name", data.name);
-            this.user = data.name
+            this.user = data.name;
             localStorage.setItem("token", data.token);
             this.getTodos();
             this.cleanInput();
@@ -69,7 +69,7 @@ new Vue({
             swal({
               title: "Warning!",
               text: data.err.message,
-              icon: "warning",
+              icon: "warning"
             });
           }
         })
@@ -96,7 +96,7 @@ new Vue({
               .then(({ data }) => {
                 self.isLoggedIn = true;
                 localStorage.setItem("name", data.name);
-                this.user = data.name
+                this.user = data.name;
                 localStorage.setItem("token", data.token);
                 self.getTodos();
               })
@@ -136,7 +136,7 @@ new Vue({
             swal({
               title: "Warning!",
               text: data.action.message,
-              icon: "warning",
+              icon: "warning"
             });
           } else {
             this.getTodos();
@@ -170,17 +170,32 @@ new Vue({
         });
     },
     deleteTodo: function(itemId) {
-      let token = localStorage.getItem("token");
-      let config = { headers: { token } };
-      axios
-        .delete(`http://35.240.242.164/user/todo/${itemId}`, config)
-        .then(({ data }) => {
-          console.log(data);
-          this.getTodos();
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this todo item!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true
+      }).then(willDelete => {
+        if (willDelete) {
+          let token = localStorage.getItem("token");
+          let config = { headers: { token } };
+          axios
+            .delete(`http://35.240.242.164/user/todo/${itemId}`, config)
+            .then(({ data }) => {
+              console.log(data);
+              this.getTodos();
+            })
+            .catch(err => {
+              console.log(err);
+            });
+          swal("Your to do item has been deleted!", {
+            icon: "success"
+          });
+        } else {
+          swal("Your to do item is not deleted!");
+        }
+      });
     },
     updateStatus: function(itemId, statusUpdate) {
       let update = { completed: statusUpdate };
@@ -241,7 +256,7 @@ new Vue({
   },
   created: function() {
     if (localStorage.getItem("token")) {
-      this.user = localStorage.getItem("name")
+      this.user = localStorage.getItem("name");
       this.isLoggedIn = true;
       this.getTodos();
     }
