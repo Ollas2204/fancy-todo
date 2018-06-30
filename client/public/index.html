@@ -39,16 +39,7 @@
         </div>
       </div>
     </nav>
-
-    <div v-if="hasWarning" class="alert alert-danger alert-dismissible fade show" role="alert">
-      <ul>
-        <li v-for="(item) in warning">{{item.message}}</li>
-      </ul>
-      <button @click="hasWarning = false" type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-
+    
     <div v-if="!isRegister && !isLoggedIn" id="login">
       <h3>Login</h3>
       <div class="form-group">

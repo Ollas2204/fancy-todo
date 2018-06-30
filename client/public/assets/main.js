@@ -13,8 +13,6 @@ new Vue({
     updateItem: "",
     addTags: "",
     removeTags: "",
-    warning: "",
-    hasWarning: false,
     search: "",
     user: ""
   },
@@ -35,8 +33,11 @@ new Vue({
             this.getTodos();
             this.cleanInput();
           } else {
-            this.warning = data;
-            this.hasWarning = true;
+            swal({
+              title: "Warning!",
+              text: data.err.message,
+              icon: "warning",
+            });
           }
         })
         .catch(err => {
@@ -65,8 +66,11 @@ new Vue({
             this.cleanInput();
             this.isRegister = false;
           } else {
-            this.warning = data;
-            this.hasWarning = true;
+            swal({
+              title: "Warning!",
+              text: data.err.message,
+              icon: "warning",
+            });
           }
         })
         .catch(err => {
@@ -129,8 +133,11 @@ new Vue({
         .post("http://35.240.242.164/user", payload, config)
         .then(({ data }) => {
           if (data.action) {
-            this.warning = data;
-            this.hasWarning = true;
+            swal({
+              title: "Warning!",
+              text: data.action.message,
+              icon: "warning",
+            });
           } else {
             this.getTodos();
             this.cleanInput();
@@ -229,7 +236,6 @@ new Vue({
       this.email = "";
       this.password = "";
       this.name = "";
-      this.warning = "";
       this.search = "";
     }
   },
