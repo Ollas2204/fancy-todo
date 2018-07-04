@@ -18,8 +18,10 @@ let userSchema = new Schema(
       type: String,
       required: [true, "password is required"]
     },
-    name: String,
-    fbID: String,
+    name: {
+      type: String,
+      required: [true, "name is required"]
+    },
     todos: [{
       type: Schema.Types.ObjectId,
       ref: "todos"

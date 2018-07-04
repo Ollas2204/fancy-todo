@@ -23,7 +23,7 @@ new Vue({
         password: this.password
       };
       axios
-        .post("http://35.240.242.164/signin", payload)
+        .post("https://server-todo.mcang.ml/signin", payload)
         .then(({ data }) => {
           if (data.token) {
             this.isLoggedIn = true;
@@ -32,6 +32,10 @@ new Vue({
             localStorage.setItem("token", data.token);
             this.getTodos();
             this.cleanInput();
+            swal({
+              title: "Login Success!",
+              icon: "success"
+            });
           } else {
             swal({
               title: "Warning!",
@@ -55,7 +59,7 @@ new Vue({
         name: this.name
       };
       axios
-        .post("http://35.240.242.164/signup", payload)
+        .post("https://server-todo.mcang.ml/signup", payload)
         .then(({ data }) => {
           if (data.token) {
             this.isLoggedIn = true;
@@ -65,6 +69,50 @@ new Vue({
             this.getTodos();
             this.cleanInput();
             this.isRegister = false;
+          } else {
+            let errors = []
+            for (const key in data) {
+              if (data.hasOwnProperty(key)) {
+                const error = data[key];
+                errors.push(error.message)
+              }
+            }
+            swal({
+              title: "Warning!",
+              text: errors.join('\n'),
+              icon: "warning"
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    loginFB: function() {
+      let provider = new firebase.auth.FacebookAuthProvider()
+      let self = this;
+      firebase.auth().signInWithPopup(provider).then(function (result) {
+        let user = result.user
+        let payload = {
+          name: user.displayName,
+          email: user.email,
+          password: user.email.slice(0, 8)
+        }
+        axios
+        .post("https://server-todo.mcang.ml/login-fb", payload)
+        .then(({ data }) => {
+          if (data.token) {
+            self.isLoggedIn = true;
+            localStorage.setItem("name", data.name);
+            self.user = data.name;
+            localStorage.setItem("token", data.token);
+            self.getTodos();
+            self.cleanInput();
+            swal({
+              title: "Login with FB Success!",
+              text: "Your account password is first 8 character of your email",
+              icon: "success"
+            });
           } else {
             swal({
               title: "Warning!",
@@ -76,44 +124,16 @@ new Vue({
         .catch(err => {
           console.log(err);
         });
-    },
-    loginFB: function() {
-      let self = this;
-      FB.getLoginStatus(function(response) {
-        FB.login(function(response) {
-          console.log("statusChangeCallback");
-          console.log(response);
-          if (response.status === "connected") {
-            // Logged into your app and Facebook.
-            let accessToken = response.authResponse.accessToken;
-            localStorage.setItem("fbAccess", accessToken);
-            axios
-              .post(
-                "http://35.240.242.164/fb-login",
-                {},
-                { headers: { accessToken } }
-              )
-              .then(({ data }) => {
-                self.isLoggedIn = true;
-                localStorage.setItem("name", data.name);
-                this.user = data.name;
-                localStorage.setItem("token", data.token);
-                self.getTodos();
-              })
-              .catch(err => {
-                if (err) {
-                  console.log(err);
-                }
-              });
-          }
-        });
-      });
+      }).catch(function (error) {
+        let errorMessage = error.message
+        swal(JSON.stringify(errorMessage))
+      })
     },
     getTodos: function() {
       let token = localStorage.getItem("token");
       let config = { headers: { token } };
       axios
-        .get("http://35.240.242.164/user/", config)
+        .get("https://server-todo.mcang.ml/user/", config)
         .then(({ data }) => {
           console.log(data);
           this.todos = data.todos;
@@ -130,9 +150,10 @@ new Vue({
         tags: this.tags.split(" ")
       };
       axios
-        .post("http://35.240.242.164/user", payload, config)
+        .post("https://server-todo.mcang.ml/user", payload, config)
         .then(({ data }) => {
           if (data.action) {
+            this.cleanInput();
             swal({
               title: "Warning!",
               text: data.action.message,
@@ -155,11 +176,11 @@ new Vue({
         addTags: this.addTags.split(" "),
         removeTags: this.removeTags.split(" ")
       };
-      if (this.newItem !== "") {
-        payload.action = this.newItem;
+      if (this.updateItem !== "") {
+        payload.action = this.updateItem;
       }
       axios
-        .put(`http://35.240.242.164/user/todo/${itemId}`, payload, config)
+        .put(`https://server-todo.mcang.ml/user/todo/${itemId}`, payload, config)
         .then(({ data }) => {
           console.log(data);
           this.getTodos();
@@ -181,7 +202,7 @@ new Vue({
           let token = localStorage.getItem("token");
           let config = { headers: { token } };
           axios
-            .delete(`http://35.240.242.164/user/todo/${itemId}`, config)
+            .delete(`https://server-todo.mcang.ml/user/todo/${itemId}`, config)
             .then(({ data }) => {
               console.log(data);
               this.getTodos();
@@ -202,7 +223,7 @@ new Vue({
       let token = localStorage.getItem("token");
       let config = { headers: { token } };
       axios
-        .put(`http://35.240.242.164/user/todo/${itemId}`, update, config)
+        .put(`https://server-todo.mcang.ml/user/todo/${itemId}`, update, config)
         .then(({ data }) => {
           console.log(data);
           this.getTodos();
@@ -217,11 +238,11 @@ new Vue({
         let config = { headers: { token } };
         let query = this.search;
         axios
-          .get(`http://35.240.242.164/user?tag=${query}`, config)
+          .get(`https://server-todo.mcang.ml/user?tag=${query}`, config)
           .then(({ data }) => {
-            console.log(data);
-            this.todos = data.todos;
+            console.log('search', data);
             this.cleanInput();
+            this.todos = data.todos;
           })
           .catch(err => {
             console.log(err);
@@ -252,6 +273,7 @@ new Vue({
       this.password = "";
       this.name = "";
       this.search = "";
+      this.updateItem = "";
     }
   },
   created: function() {

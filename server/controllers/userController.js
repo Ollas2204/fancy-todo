@@ -8,6 +8,7 @@ module.exports = {
     if (req.query.tag) {
       params.tags = { $in: req.query.tag };
     }
+    console.log(params);
     todo
       .find(params)
       .sort({ completed: 1, createdAt: -1 })
