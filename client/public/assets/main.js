@@ -210,11 +210,6 @@ new Vue({
             .catch(err => {
               console.log(err);
             });
-          swal("Your to do item has been deleted!", {
-            icon: "success"
-          });
-        } else {
-          swal("Your to do item is not deleted!");
         }
       });
     },

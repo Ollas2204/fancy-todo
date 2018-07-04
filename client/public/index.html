@@ -63,8 +63,6 @@
       <button @click="loginFB" class="btn btn-primary" id="fb-login" scope="public_profile,email" onlogin="checkLoginState();">
         Login using Facebook
       </button>
-      <br>
-      <small>Default Password: 'fbLogin'</small>
     </div>
 
     <div v-if="isRegister && !isLoggedIn" id="register">
@@ -191,7 +189,7 @@
     crossorigin="anonymous"></script>
   <!-- to initialize firebase -->
   <script src="assets/firebase.js"></script>
-  
+
   <script src="assets/main.js"></script>
 </body>
 
